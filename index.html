@@ -8,7 +8,6 @@
     :root {
       --bg: #0f172a;
       --card: #1e293b;
-      --subcard: #162032;
       --border: #334155;
       --text: #f8fafc;
       --muted: #94a3b8;
@@ -22,27 +21,26 @@
       font-family: system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: 14px;
-      line-height: 1.35;
-      font-size: 14px;
+      padding: 20px;
+      line-height: 1.5;
     }
-    .container { max-width: 1180px; margin: 0 auto; }
+    .container { max-width: 1200px; margin: 0 auto; }
     header {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding-bottom: 12px;
+      gap: 15px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
-    h1 { font-size: 1.25rem; color: var(--accent); }
-    .controls { display: flex; align-items: center; gap: 8px; }
+    h1 { font-size: 1.5rem; color: var(--accent); }
+    .controls { display: flex; align-items: center; gap: 12px; }
     .badge {
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       background: var(--card);
       border: 1px solid var(--border);
       color: var(--muted);
@@ -51,144 +49,52 @@
       background: var(--accent);
       color: #0f172a;
       border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      font-size: 0.8rem;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
     }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
     .status-msg {
-      padding: 10px 12px;
-      border-radius: 6px;
+      padding: 14px;
+      border-radius: 8px;
       background: var(--card);
       border: 1px solid var(--border);
-      margin-bottom: 14px;
-      font-size: 0.85rem;
+      margin-bottom: 20px;
     }
     .status-error { border-color: var(--danger); color: #fca5a5; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
     }
-    .kpi-card {
+    .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 18px;
     }
-    .kpi-card.highlight {
-      border-color: rgba(56, 189, 248, 0.5);
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.08) 0%, var(--card) 100%);
-    }
-    .kpi-card h3 { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; font-weight: 500; }
-    .kpi-card .value { font-size: 1.3rem; font-weight: 700; }
-    .kpi-card.highlight .value { color: var(--accent); }
-
-    /* Cabecera de columnas */
-    .columns-header {
-      display: grid;
-      grid-template-columns: 1fr 105px 105px 105px 115px 125px;
-      gap: 8px;
-      padding: 6px 14px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .columns-header div:not(:first-child) {
-      text-align: right;
-    }
-
-    /* Tarjeta compacta por Planta */
-    .plant-card {
+    .card h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+    .card .value { font-size: 1.6rem; font-weight: 700; }
+    section { margin-bottom: 30px; }
+    h2 { font-size: 1.15rem; margin-bottom: 12px; color: var(--text); }
+    .table-wrap {
+      overflow-x: auto;
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 10px;
-      overflow: hidden;
+      border-radius: 10px;
     }
-    .plant-header {
-      display: grid;
-      grid-template-columns: 1fr 105px 105px 105px 115px 125px;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 14px;
-      background: rgba(15, 23, 42, 0.45);
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
       border-bottom: 1px solid var(--border);
     }
-    .plant-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
-    .plant-code { font-size: 0.72rem; color: var(--muted); margin-left: 6px; font-weight: 400; }
-    .col-val {
-      text-align: right;
-      font-size: 0.85rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-    }
-    .col-val.live { color: var(--accent); }
-    .col-val.ok { color: var(--success); }
-    .col-label-mobile { display: none; font-size: 0.7rem; color: var(--muted); font-weight: 400; }
-
-    @media (max-width: 780px) {
-      .columns-header { display: none; }
-      .plant-header {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .plant-name-wrap { grid-column: 1 / -1; margin-bottom: 4px; }
-      .col-val { text-align: left; }
-      .col-label-mobile { display: inline; }
-    }
-
-    /* Subsecciones compactas (Equipos y Alarmas) */
-    .plant-details {
-      padding: 7px 14px;
-      background: var(--subcard);
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 0.75rem;
-    }
-    .detail-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 6px;
-    }
-    .detail-label {
-      color: var(--muted);
-      font-weight: 600;
-      min-width: 68px;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .items-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      flex: 1;
-    }
-    .chip {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 7px;
-      color: #cbd5e1;
-      font-size: 0.73rem;
-    }
-    .chip strong { color: var(--text); font-weight: 600; }
-    .chip .kw-tag { color: var(--accent); font-weight: 600; margin-left: 4px; }
-    .chip-alarm {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-    }
-    .text-ok { color: var(--success); font-size: 0.73rem; }
-    .text-muted { color: var(--muted); font-size: 0.73rem; }
+    th { color: var(--muted); font-weight: 600; background: rgba(15, 23, 42, 0.4); }
+    tr:last-child td { border-bottom: none; }
+    .pill-ok { color: var(--success); font-weight: 600; }
+    .pill-warn { color: var(--warning); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -196,7 +102,7 @@
     <header>
       <div>
         <h1>Panel Solar FusionSolar</h1>
-        <small id="last-update" style="color: var(--muted); font-size: 0.75rem;">Esperando datos...</small>
+        <small id="last-update" style="color: var(--muted);">Esperando datos...</small>
       </div>
       <div class="controls">
         <span id="source-badge" class="badge">Sin conectar</span>
@@ -207,23 +113,71 @@
     <div id="status-box" class="status-msg">Conectando con la API de FusionSolar...</div>
 
     <div class="grid" id="kpi-grid">
-      <div class="kpi-card"><h3>Plantas activas</h3><div class="value" id="kpi-plantas">-</div></div>
-      <div class="kpi-card highlight"><h3>Potencia actual (kW)</h3><div class="value" id="kpi-actual">-</div></div>
-      <div class="kpi-card"><h3>Energía hoy (kWh)</h3><div class="value" id="kpi-dia">-</div></div>
-      <div class="kpi-card"><h3>Energía total (kWh)</h3><div class="value" id="kpi-total">-</div></div>
-      <div class="kpi-card"><h3>Alarmas (7 días)</h3><div class="value" id="kpi-alarmas">-</div></div>
+      <div class="card"><h3>Plantas activas</h3><div class="value" id="kpi-plantas">-</div></div>
+      <div class="card"><h3>Energía hoy (kWh)</h3><div class="value" id="kpi-dia">-</div></div>
+      <div class="card"><h3>Energía total (kWh)</h3><div class="value" id="kpi-total">-</div></div>
+      <div class="card"><h3>Alarmas (7 días)</h3><div class="value" id="kpi-alarmas">-</div></div>
     </div>
 
-    <div class="columns-header" id="col-headers" style="display: none;">
-      <div>Planta</div>
-      <div>Capacidad (kW)</div>
-      <div>Actual (kW)</div>
-      <div>Hoy (kWh)</div>
-      <div>Mes (kWh)</div>
-      <div>Total (kWh)</div>
-    </div>
+    <section>
+      <h2>Plantas Fotovoltaicas</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Código</th>
+              <th>Capacidad (kW)</th>
+              <th>Hoy (kWh)</th>
+              <th>Mes (kWh)</th>
+              <th>Total (kWh)</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-plantas">
+            <tr><td colspan="6" style="color: var(--muted);">Sin datos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <div id="lista-plantas"></div>
+    <section>
+      <h2>Inventario de Equipos</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Modelo</th>
+              <th>Nº Serie (SN)</th>
+              <th>Tipo ID</th>
+              <th>Planta</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-equipos">
+            <tr><td colspan="5" style="color: var(--muted);">Sin datos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Alarmas Recientes (Últimos 7 días)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Planta</th>
+              <th>Equipo</th>
+              <th>Alarma</th>
+              <th>Severidad</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-alarmas">
+            <tr><td colspan="4" style="color: var(--muted);">Sin alarmas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -237,13 +191,12 @@
       const btn = document.getElementById("btn-refresh");
       const statusBox = document.getElementById("status-box");
       const badge = document.getElementById("source-badge");
-      const colHeaders = document.getElementById("col-headers");
 
       btn.disabled = true;
       statusBox.className = "status-msg";
       statusBox.style.display = "block";
       statusBox.textContent = forzar
-        ? "Consultando servidores en tiempo real (puede tardar unos 15 segundos)..."
+        ? "Consultando servidores de Huawei en tiempo real (puede tardar unos 15 segundos)..."
         : "Cargando datos desde el servidor...";
 
       try {
@@ -263,43 +216,68 @@
         const plantas = data.plantas || [];
         const equipos = data.equipos || [];
         const alarmas = data.alarmas || [];
-        const telemetria = data.telemetria || {};
 
-        // Mapa de potencia instantánea por devId (inversores residenciales=1, comerciales=39)
-        const potenciaPorDevId = {};
-        ["1", "39"].forEach(tipo => {
-          (telemetria[tipo] || []).forEach(t => {
-            if (t.devId !== undefined && t.active_power !== null && t.active_power !== undefined) {
-              potenciaPorDevId[String(t.devId)] = Number(t.active_power) || 0;
-            }
-          });
-        });
-
-        let potenciaTotalActual = 0;
         let energiaDia = 0;
         let energiaTotal = 0;
-
         plantas.forEach(p => {
           energiaDia += Number(p.day_power || 0);
           energiaTotal += Number(p.total_power || 0);
         });
 
-        const contenedor = document.getElementById("lista-plantas");
+        document.getElementById("kpi-plantas").textContent = plantas.length;
+        document.getElementById("kpi-dia").textContent = fmt(energiaDia);
+        document.getElementById("kpi-total").textContent = fmt(energiaTotal);
+        document.getElementById("kpi-alarmas").textContent = alarmas.length;
 
-        if (!plantas.length) {
-          colHeaders.style.display = "none";
-          document.getElementById("kpi-plantas").textContent = "0";
-          document.getElementById("kpi-actual").textContent = "0";
-          document.getElementById("kpi-dia").textContent = "0";
-          document.getElementById("kpi-total").textContent = "0";
-          document.getElementById("kpi-alarmas").textContent = alarmas.length;
-          contenedor.innerHTML = `<div class="status-msg" style="color: var(--muted);">No se encontraron plantas asignadas.</div>`;
-          return;
-        }
+        const tbodyPlantas = document.getElementById("tabla-plantas");
+        tbodyPlantas.innerHTML = plantas.length
+          ? plantas.map(p => `
+              <tr>
+                <td><strong>${p.plantName || p.stationName || "-"}</strong></td>
+                <td>${p.plantCode || "-"}</td>
+                <td>${fmt(p.capacity)}</td>
+                <td class="pill-ok">${fmt(p.day_power)}</td>
+                <td>${fmt(p.month_power)}</td>
+                <td>${fmt(p.total_power)}</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="6" style="color: var(--muted);">No se encontraron plantas</td></tr>`;
 
-        colHeaders.style.display = "";
+        const tbodyEquipos = document.getElementById("tabla-equipos");
+        tbodyEquipos.innerHTML = equipos.length
+          ? equipos.map(e => `
+              <tr>
+                <td>${e.devName || "-"}</td>
+                <td>${e.invType || e.model || "-"}</td>
+                <td>${e.esnCode || "-"}</td>
+                <td>${e.devTypeId || "-"}</td>
+                <td>${e.stationCode || "-"}</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="5" style="color: var(--muted);">No se encontraron equipos</td></tr>`;
 
-        const htmlPlantas = plantas.map(p => {
-          const codigo = p.plantCode || p.stationCode || "";
-          const nombrePlanta = p.plantName || p.stationName || "Planta sin nombre";
+        const tbodyAlarmas = document.getElementById("tabla-alarmas");
+        tbodyAlarmas.innerHTML = alarmas.length
+          ? alarmas.map(a => `
+              <tr>
+                <td>${a.stationName || a.stationCode || "-"}</td>
+                <td>${a.devName || "-"}</td>
+                <td class="pill-warn">${a.alarmName || "-"}</td>
+                <td>${a.lev || "-"}</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="4" class="pill-ok">Sin alarmas registradas en los últimos 7 días</td></tr>`;
 
+      } catch (err) {
+        statusBox.className = "status-msg status-error";
+        statusBox.textContent = `Error al obtener datos: ${err.message}`;
+        badge.textContent = "Error";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => cargarDatos(false));
+  </script>
+</body>
+</html>
