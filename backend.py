@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import pandas as pd
 import requests
+import math
 from requests.adapters import HTTPAdapter
 
 app = FastAPI(title="FusionSolar FullStack API")
@@ -40,7 +41,17 @@ TIEMPO_CACHE = 300  # 5 minutos
 def df_a_lista_limpia(df: pd.DataFrame):
     if df.empty:
         return []
-    return df.where(pd.notnull(df), None).to_dict(orient="records")
+    registros = df.to_dict(orient="records")
+    limpios = []
+    for fila in registros:
+        fila_limpia = {}
+        for k, v in fila.items():
+            if pd.isna(v) or (isinstance(v, float) and (math.isnan(v) or math.isinf(v))):
+                fila_limpia[k] = None
+            else:
+                fila_limpia[k] = v
+        limpios.append(fila_limpia)
+    return limpios
 
 
 def ejecutar_extraccion_huawei():
