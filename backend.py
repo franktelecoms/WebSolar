@@ -27,7 +27,7 @@ class HuaweiTLSAdapter(HTTPAdapter):
         return super().init_poolmanager(*args, **kwargs)
 
 
-BASE_URL = "https://huawei.com"
+BASE_URL = "https://eu5.fusionsolar.huawei.com"
 # Las credenciales se leerán de forma segura desde las variables de entorno de Render
 USERNAME = os.getenv("HUAWEI_USER")
 SYSTEM_CODE = os.getenv("HUAWEI_PASS")
@@ -44,6 +44,7 @@ def df_a_lista_limpia(df: pd.DataFrame):
 
 
 def ejecutar_extraccion_huawei():
+    print(">>> Iniciando extracción de datos de FusionSolar...", flush=True)
     if not USERNAME or not SYSTEM_CODE:
         raise HTTPException(
             status_code=500,
@@ -63,6 +64,7 @@ def ejecutar_extraccion_huawei():
 
     # PASO 1: LOGIN Y REDIRECCIÓN
     nodo_actual = BASE_URL
+    print(f">>> [1/5] Conectando y haciendo login en {nodo_actual}...", flush=True)
     login_res = session.post(
         f"{nodo_actual}/thirdData/login",
         json={"userName": USERNAME, "systemCode": SYSTEM_CODE},
@@ -71,7 +73,8 @@ def ejecutar_extraccion_huawei():
 
     if login_res.status_code in (301, 302, 307, 308):
         nueva_url = login_res.headers.get("Location", "")
-        if "://huawei.com" in nueva_url:
+        print(f">>> Redirección detectada hacia: {nueva_url}", flush=True)
+        if "fusionsolar.huawei.com" in nueva_url:
             nodo_actual = nueva_url.split("/thirdData")[0]
             time.sleep(2)
             login_res = session.post(
@@ -87,20 +90,24 @@ def ejecutar_extraccion_huawei():
 
     token = login_res.headers.get("xsrf-token")
     if not token:
+        print(f">>> Error en login: Status {login_res.status_code} | Respuesta: {login_res.text}", flush=True)
         raise HTTPException(
             status_code=401,
             detail=f"No se pudo iniciar sesión (Status {login_res.status_code})",
         )
 
+    print(">>> Login exitoso. Token XSRF obtenido.", flush=True)
     session.headers.update({"xsrf-token": token})
     time.sleep(2)
 
     # PASO 2: PLANTAS + KPIS EN TIEMPO REAL
+    print(">>> [2/5] Consultando listado de plantas...", flush=True)
     res_plantas = session.post(
         f"{nodo_actual}/thirdData/stations", json={"pageNo": 1, "pageSize": 100}
     ).json()
     plantas = res_plantas.get("data", {}).get("list", [])
     df_plantas = pd.DataFrame(plantas)
+    print(f">>> Plantas encontradas: {len(df_plantas)}", flush=True)
 
     if df_plantas.empty:
         return {"plantas": [], "equipos": [], "telemetria": {}, "alarmas": []}
@@ -108,6 +115,7 @@ def ejecutar_extraccion_huawei():
     all_codes = ",".join(df_plantas["plantCode"])
     time.sleep(2)
 
+    print(">>> Consultando KPIs en tiempo real de las plantas...", flush=True)
     res_kpi = session.post(
         f"{nodo_actual}/thirdData/getStationRealKpi",
         json={"stationCodes": all_codes},
@@ -128,14 +136,17 @@ def ejecutar_extraccion_huawei():
     time.sleep(2)
 
     # PASO 3: INVENTARIO DE EQUIPOS
+    print(">>> [3/5] Consultando inventario de equipos...", flush=True)
     res_equipos = session.post(
         f"{nodo_actual}/thirdData/getDevList", json={"stationCodes": all_codes}
     ).json()
     equipos = res_equipos.get("data") or []
     df_equipos = pd.DataFrame(equipos)
+    print(f">>> Equipos encontrados: {len(df_equipos)}", flush=True)
     time.sleep(2)
 
     # PASO 4: TELEMETRÍA POR TIPO DE DISPOSITIVO
+    print(">>> [4/5] Consultando telemetría por tipo de dispositivo...", flush=True)
     telemetria_por_tipo = {}
     if not df_equipos.empty and "devTypeId" in df_equipos.columns:
         for tipo_id in (1, 17, 39, 47):
@@ -158,6 +169,7 @@ def ejecutar_extraccion_huawei():
                 time.sleep(2)
 
     # PASO 5: ALARMAS (ÚLTIMOS 7 DÍAS)
+    print(">>> [5/5] Consultando alarmas de los últimos 7 días...", flush=True)
     ahora_ms = int(time.time() * 1000)
     hace_7_dias_ms = ahora_ms - (7 * 24 * 60 * 60 * 1000)
     res_alarmas = session.post(
@@ -170,6 +182,7 @@ def ejecutar_extraccion_huawei():
         },
     ).json()
     df_alarmas = pd.DataFrame(res_alarmas.get("data") or [])
+    print(f">>> Extracción finalizada. Alarmas encontradas: {len(df_alarmas)}", flush=True)
 
     return {
         "ultima_actualizacion": time.strftime("%d/%m/%Y %H:%M:%S"),
@@ -180,19 +193,21 @@ def ejecutar_extraccion_huawei():
     }
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def mostrar_web():
     return FileResponse("index.html")
 
 
 @app.get("/api/datos")
 def obtener_datos(forzar: bool = False):
+    print(f">>> Petición recibida en /api/datos (forzar={forzar})", flush=True)
     ahora = time.time()
     if (
         not forzar
         and CACHE["payload"]
         and (ahora - CACHE["timestamp"] < TIEMPO_CACHE)
     ):
+        print(">>> Devolviendo datos desde caché.", flush=True)
         return {**CACHE["payload"], "fuente": "caché"}
 
     resultado = ejecutar_extraccion_huawei()
